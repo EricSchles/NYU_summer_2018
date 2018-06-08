@@ -1,5 +1,11 @@
 # Project One
 
+## Deadline
+
+The first project will be due June 21st
+
+## Description 
+
 In this project you will be building a tiny computer.  By understanding how your computer works, you'll better be able to understand how computation works more generally speaking.  For this project you'll be implementing the basics of a computer system.
 
 Specifically, we will be making an arithmetic logic unit (ALU) for this project.  You will need to implement a series of logic gates in order to build this ALU.  These gates will be written as functions.
