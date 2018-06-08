@@ -4,4 +4,4 @@
 
 ## 1.2 Create an AI that passes the turring test
 
-## Write an automated proving system that can prove any known result
+## 1.3 Write an automated proving system that can prove any known result
