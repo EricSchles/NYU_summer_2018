@@ -1,0 +1,47 @@
+class Node:
+    def __init__(self, data, next):
+        self.data = data
+        self.next = next
+        
+    def __str__(self):
+        return repr(self.data)
+    
+class LinkedList:
+    def __init__(self):
+        self.head = None
+    
+    def append(self, data):
+        if self.head is None:
+            self.head = Node(data, None)
+        else:
+            cur = self.head
+            while cur.next:
+                cur = cur.next
+            cur.next = Node(data, None)
+    
+    def pop(self):
+        if self.head is None:
+            return None
+        else:
+            cur = self.head
+            while cur.next:
+                cur = cur.next
+            data = cur.next.data
+            cur.next = None
+            return data
+    
+linked_list = LinkedList()
+for i in range(10):
+    linked_list.append(i)
+ 
+cur = linked_list.head
+while cur:
+    print(cur)
+    cur = cur.next
+
+elem_exists = True
+while elem_exists:
+   cur = linked_list.pop()
+   print(cur)
+   if cur is None:
+       elem_exists = False
