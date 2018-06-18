@@ -1,0 +1,14 @@
+
+lecture 4 - # To do - big-OH notation && divide and conquer algorithms - sorting, multiplication, matrix multiplication, 
+# dynamic programming
+
+lecture 5 - # Next lecture classes, inheritance, composition, libraries, formal definition of a object
+# lecture after that, 
+
+
+
+
+Do all project write ups
+
+Write lectures 3 & 4
+
