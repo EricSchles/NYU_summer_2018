@@ -19,3 +19,23 @@ Specifically, we will be making an arithmetic logic unit (ALU) for this project.
 3. Turn in the project along with a write up of what you did.  You should explain each function and the choices you made when building your system.  You should also include three examples programs that use your ALU to perform some simple computation.
 
  
+# Project Two
+
+## Description
+
+In this project you'll be implementing and using linear regression in a few ways.  First you'll implement it without libraries, this will teach you how the algorithm works.  Then you'll implement it in numpy.  This will give you a sense of how to make use of the numpy interface in detail.  Finally you'll implement distributed linear regression using dask.  This will give you a sense of how to write a production machine learning algorithm. 
+
+## Deadline
+
+TBD
+
+## Steps
+
+1. In order to get background on linear regression read the following materials explaining how the algorithm works.  Once you have a good sense of this you'll write your "from scratch" implementation.  You'll use your implementation to analyze this data set.  Compare how your version of linear regression does against statsmodels version and scikit-learn's version.  Did your algorithm come up with the same results?  Why or why not?  What did other implementations do differently.  Is the running time of your algorithm faster or slower?  Why?
+
+2. Next you'll write a Cythonized version of the linear regression algorithm.  Read through the Cython documentation found here.  Compare and contrast the running time and accuracy of the cythonized version with the vanilla version.  What were the contributing factors for any differences?
+
+3. Next you'll read through the numpy specification found here.  And then you'll reimplement linear regression using numpy.  What are the differences between the cythonized version and the numpy version, in terms of performance and accuracy?  How much faster is the numpy version than the vanilla version?  
+
+4.  Finally you'll read through the dask documentation found here and this watch this tutorial on dask found here.  Then you'll implement a distributed version of linear regression using dask.  Compare and contrast the performance and accuracy of the dask implementation against the vanilla, cythonized, and numpy versions.  Which does the best in terms of speed?  Why might this be the case?  Which does the best in accuracy?  Why might this be the case?
+
