@@ -27,7 +27,7 @@ In this project you'll be implementing and using linear regression in a few ways
 
 ## Deadline
 
-July 12th
+July 19th
 
 ## Steps
 
