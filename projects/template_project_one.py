@@ -18,7 +18,7 @@ def half_adder(elem_one, elem_two):
 	pass
 
 
-def full_adder(elem_one, elem_two):
+def full_adder(elem_one, elem_two, carry):
 	pass
 
 
