@@ -22,5 +22,5 @@ def full_adder(elem_one, elem_two, carry):
 	pass
 
 
-def alu(elem_one, elem_two):
+def alu(elem_one, elem_two, flags):
 	pass
