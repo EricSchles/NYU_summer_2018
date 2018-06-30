@@ -60,4 +60,4 @@ Machine learning
 	* h2o model interpretability white paper.  
 	* shap score??
 
-	
+https://github.com/EricSchles/algorithms
