@@ -13,16 +13,29 @@ def eq_solver(val, func):
         return round(val, 5)
     
     
-def eq_float_solver(val, eq, epsilon=0.0001, step_size=0.001):
+def eq_float_solver(val, eq, epsilon=0.0001, step_size=0.001, debug=False):
     if abs(eq(val)) < epsilon:
-        print("got here")
         return round(val, 5)
     elif eq(val) > 0:
-        val -= step_size
-        return eq_float_solver(val, eq)
+        if debug:
+            val -= step_size
+            result_one = eq_float_solver(val, eq)
+            import code
+            code.interact(local=locals())
+            return result_one
+        else:
+            val -= step_size
+            return eq_float_solver(val, eq)
     elif eq(val) < 0:
-        val += step_size
-        return eq_float_solver(val, eq)
+        if debug:
+            val += step_size
+            result_two = eq_float_solver(val, eq)
+            import code
+            code.interact(local=locals())
+            return result_two
+        else:
+            val += step_size
+            return eq_float_solver(val, eq)
     else:
         return round(val, 5)
 
@@ -44,19 +57,50 @@ def eq_diag_solver(val, eq, epsilon=0.0001, step_size=0.001):
     else:
         return round(val, 5)
     
-    
+
+def arange(start, stop, step):
+    cur = start
+    while start < stop:
+        yield cur
+        cur += step
+        
+def iterative_solver(eq, start, stop, epsilon=0.0001, step_size=0.001):
+    for val in arange(start, stop, step_size):
+        if abs(eq(val)) < epsilon:
+            return round(val, 5)
+
+def iterative_diag_solver(eq, start, stop, epsilon=0.0001, step_size=0.001):
+    for val in arange(start, stop, step_size):
+        if abs(eq(val)) - 1 < epsilon:
+            return round(val, 5)
+
+
+def flatten(matrix):
+    listing = []
+    for row in matrix:
+        for elem in row:
+            listing.append(elem)
+    return listing
+
+
 def solve_matrix(matrix):
+    flattened_matrix = flatten(matrix)
+    largest_value = max(flattened_matrix)
+    num_zeros = len(str(largest_value))
+    val_range = int("1" + "0"*num_zeros)
     steps = []
     cur_matrix = matrix
-    for index, row in enumerate(matrix):
-        for cur_elem_idx in range(len(row)):
-            if index == cur_elem_idx:
-                cur_matrix, step = solve_vector(cur_matrix[index][cur_elem_idx],
-                                          cur_elem_idx, index, cur_matrix)
-            else:
-                step = solve_vector(cur_matrix[index][cur_elem_idx], 
-                                    cur_elem_idx, index, cur_matrix)
-                cur_matrix = linear_combination(cur_matrix, step)
+    for index in range(len(matrix)):
+        col_index = index
+        row_index = index
+        cur_matrix, step = solve_vector(cur_matrix[col_index][row_index],
+                                        row_index, col_index, cur_matrix, val_range)
+        steps.append(step)
+    for row_index in range(len(matrix[0])):
+        for col_index in range(len(matrix)):
+            step = solve_vector(cur_matrix[col_index][row_index], 
+                                row_index, col_index, cur_matrix, val_range)
+            cur_matrix = linear_combination(cur_matrix, step)
             steps.append(step)
     return steps
 
@@ -71,13 +115,15 @@ def linear_combination(matrix, step):
     return matrix
     
     
-def solve_vector(elem, cur_elem_idx, diag_index, matrix):
+def solve_vector(elem, cur_elem_idx, diag_index, matrix, magnitude):
     for row_index, matrix_row in enumerate(matrix):
         print(matrix)
         if cur_elem_idx == diag_index:
             equation = lambda elem, coef: elem/coef
             eq = partial(equation, elem)
-            reciprical = eq_diag_solver(1, eq)
+            start, stop = magnitude*-1, magnitude
+
+            reciprical = iterative_diag_solver(eq, start, stop)
             matrix[diag_index] = [elem*reciprical 
                                   for elem in matrix[diag_index]]
             operation = lambda coef, elem: elem*coef
@@ -90,11 +136,8 @@ def solve_vector(elem, cur_elem_idx, diag_index, matrix):
             break
     eq_to_solve = lambda elem, other_elem, coef: elem + coef*other_elem
     to_solve = partial(eq_to_solve, elem, other_elem)
-    try:
-        coef = eq_float_solver(0, to_solve)
-    except:
-        import code
-        code.interact(local=locals())
+    start, stop = magnitude*-1, magnitude
+    coef = iterative_solver(to_solve, start=start, stop=stop)
     operation = lambda coef, elem, other: elem + coef*other
     op = partial(operation, coef)
     return [diag_index, cur_elem_idx, op, other_row, coef, "linear_combo"]
@@ -113,7 +156,9 @@ def apply_steps(vector, steps):
             vector[idx] = vector[idx]*coef
     return vector
 
-setrecursionlimit(10000)
-matrix = [[1, -2, 3], [1, 2, 1], [4, 2, 3]]
-steps = solve_matrix(matrix)
-apply_steps([3, 3, 7], steps)
+
+#setrecursionlimit(10000)
+if __name__ == '__main__':
+    matrix = [[1, -2, 3], [1, 2, 1], [4, 2, 3]]
+    steps = solve_matrix(matrix)
+    apply_steps([3, 3, 7], steps)
