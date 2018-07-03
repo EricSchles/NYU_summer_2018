@@ -19,20 +19,14 @@ def eq_float_solver(val, eq, epsilon=0.0001, step_size=0.001, debug=False):
     elif eq(val) > 0:
         if debug:
             val -= step_size
-            result_one = eq_float_solver(val, eq)
-            import code
-            code.interact(local=locals())
-            return result_one
+            return eq_float_solver(val, eq)
         else:
             val -= step_size
             return eq_float_solver(val, eq)
     elif eq(val) < 0:
         if debug:
             val += step_size
-            result_two = eq_float_solver(val, eq)
-            import code
-            code.interact(local=locals())
-            return result_two
+            return eq_float_solver(val, eq)
         else:
             val += step_size
             return eq_float_solver(val, eq)
@@ -63,15 +57,11 @@ def arange(start, stop, step):
     while start < stop:
         yield cur
         cur += step
+
         
 def iterative_solver(eq, start, stop, epsilon=0.0001, step_size=0.001):
     for val in arange(start, stop, step_size):
         if abs(eq(val)) < epsilon:
-            return round(val, 5)
-
-def iterative_diag_solver(eq, start, stop, epsilon=0.0001, step_size=0.001):
-    for val in arange(start, stop, step_size):
-        if abs(eq(val)) - 1 < epsilon:
             return round(val, 5)
 
 
@@ -93,16 +83,22 @@ def solve_matrix(matrix):
     for index in range(len(matrix)):
         col_index = index
         row_index = index
-        cur_matrix, step = solve_vector(cur_matrix[col_index][row_index],
-                                        row_index, col_index, cur_matrix, val_range)
+        cur_matrix, step = solve_diag(cur_matrix[col_index][row_index],
+                                      row_index, col_index, cur_matrix, val_range)
         steps.append(step)
     for row_index in range(len(matrix[0])):
         for col_index in range(len(matrix)):
+            if col_index == row_index:
+                continue
+            print("got here")
+            print(cur_matrix)
             step = solve_vector(cur_matrix[col_index][row_index], 
                                 row_index, col_index, cur_matrix, val_range)
+            print("got here too")
             cur_matrix = linear_combination(cur_matrix, step)
+            print(col_index, row_index)
             steps.append(step)
-    return steps
+    return steps, cur_matrix
 
 
 def linear_combination(matrix, step):
@@ -114,22 +110,19 @@ def linear_combination(matrix, step):
             matrix[update_row][index], matrix[other_row][index])
     return matrix
     
-    
-def solve_vector(elem, cur_elem_idx, diag_index, matrix, magnitude):
-    for row_index, matrix_row in enumerate(matrix):
-        print(matrix)
-        if cur_elem_idx == diag_index:
-            equation = lambda elem, coef: elem/coef
-            eq = partial(equation, elem)
-            start, stop = magnitude*-1, magnitude
 
-            reciprical = iterative_diag_solver(eq, start, stop)
-            matrix[diag_index] = [elem*reciprical 
-                                  for elem in matrix[diag_index]]
-            operation = lambda coef, elem: elem*coef
-            op = partial(operation, reciprical)
-            step = [diag_index, cur_elem_idx, op, None, reciprical, "rescale"]
-            return matrix, step
+def solve_diag(elem, cur_elem_idx, diag_index, matrix, magnitude):
+    reciprical = 1/elem
+    matrix[diag_index] = [elem*reciprical 
+                          for elem in matrix[diag_index]]
+    operation = lambda coef, elem: elem*coef
+    op = partial(operation, reciprical)
+    step = [diag_index, cur_elem_idx, op, None, reciprical, "rescale"]
+    return matrix, step
+
+
+def solve_vector(elem, cur_elem_idx, diag_index, matrix, magnitude):
+    for row_index, matrix_row in enumerate(matrix):        
         if matrix_row[cur_elem_idx] != 0 and row_index != diag_index:
             other_elem = matrix_row[cur_elem_idx]
             other_row = row_index
@@ -160,5 +153,5 @@ def apply_steps(vector, steps):
 #setrecursionlimit(10000)
 if __name__ == '__main__':
     matrix = [[1, -2, 3], [1, 2, 1], [4, 2, 3]]
-    steps = solve_matrix(matrix)
-    apply_steps([3, 3, 7], steps)
+    steps, cur_matrix = solve_matrix(matrix)
+    print(apply_steps([3, 3, 7], steps))
